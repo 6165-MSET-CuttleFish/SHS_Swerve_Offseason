@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 import org.firstinspires.ftc.teamcode.libs.*;
 
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -20,7 +21,7 @@ public class SwerveDriveWPI {
 
 
     CRServo[] crServos = new CRServo[4];    //Steering
-    DcMotor[] encoders = new DcMotor[4];    //Encoders to monitor steering
+    AnalogInput[] encoders = new AnalogInput[4];    //Encoders to monitor steering
     DcMotor[] motors = new DcMotor[4];
     Translation2d m_frontLeftLocation =new Translation2d(width/2, length/2);
     Translation2d m_frontRightLocation =new Translation2d(width/2, -length/2);
@@ -77,7 +78,7 @@ public void drive(double vx, double vy, double va, double imu){
             crServos[i] = (CRServo) hardwareMap.get(CRServo.class, crServoNames[i]);
         String[] encoderNames = new String[]{"back_left_encoder", "front_left_encoder", "front_right_encoder", "back_right_encoder"};
         for (int i = 0; i < 4; i++)
-            encoders[i] = (DcMotor) hardwareMap.get(DcMotor.class, encoderNames[i]);
+            encoders[i] = (AnalogInput) hardwareMap.get(AnalogInput.class, encoderNames[i]);
         String[] motorNames = new String[]{"back_left_motor", "front_left_motor", "front_right_motor", "back_right_motor"};
         for (int i = 0; i < 4; i++)
             motors[i] = (DcMotor) hardwareMap.get(DcMotor.class, motorNames[i]);
@@ -86,7 +87,7 @@ public void drive(double vx, double vy, double va, double imu){
     }
 
     private double getSteerRadians(int i){
-        return normalizeRadians(2.0 * Math.PI * encoders[i].getCurrentPosition()/TICKS_PER_ROTATION);
+        return normalizeRadians(2.0 * Math.PI * (encoders[i].getVoltage()/3.3));
     }
     private void setSteer(int i, double targetSteer){
         double currentSteer = getSteerRadians(i);
